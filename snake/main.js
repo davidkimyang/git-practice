@@ -161,6 +161,27 @@ document.addEventListener('keydown', e => {
 
 startBtn.addEventListener('click', startGame);
 
+// Mobile controls
+const btnDirMap = {
+  'btn-up':    'ArrowUp',
+  'btn-down':  'ArrowDown',
+  'btn-left':  'ArrowLeft',
+  'btn-right': 'ArrowRight',
+};
+
+Object.keys(btnDirMap).forEach(id => {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const handler = () => {
+    const newDir = dirMap[btnDirMap[id]];
+    if (!newDir) return;
+    if (newDir.x === -dir.x && newDir.y === -dir.y) return;
+    nextDir = newDir;
+  };
+  el.addEventListener('touchstart', e => { e.preventDefault(); handler(); }, { passive: false });
+  el.addEventListener('click', handler);
+});
+
 // Initial draw
 init();
 draw();

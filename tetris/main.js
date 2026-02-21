@@ -512,6 +512,40 @@
 		spawnPiece();
 	}
 
+	// Mobile controls
+	(function setupMobileControls() {
+		function addCtrl(id, handler) {
+			const el = document.getElementById(id);
+			if (!el) return;
+			el.addEventListener("touchstart", (e) => { e.preventDefault(); handler(); }, { passive: false });
+			el.addEventListener("click", handler);
+		}
+		addCtrl("btn-left", () => {
+			if (isPaused || isGameOver || !currentPiece) return;
+			if (!collides(board, currentPiece, 0, -1)) currentPiece.col -= 1;
+		});
+		addCtrl("btn-right", () => {
+			if (isPaused || isGameOver || !currentPiece) return;
+			if (!collides(board, currentPiece, 0, 1)) currentPiece.col += 1;
+		});
+		addCtrl("btn-soft-drop", () => {
+			if (isPaused || isGameOver) return;
+			softDrop();
+		});
+		addCtrl("btn-hard-drop", () => {
+			if (isPaused || isGameOver) return;
+			hardDrop();
+		});
+		addCtrl("btn-cw", () => {
+			if (isPaused || isGameOver || !currentPiece) return;
+			rotate(currentPiece, +1);
+		});
+		addCtrl("btn-ccw", () => {
+			if (isPaused || isGameOver || !currentPiece) return;
+			rotate(currentPiece, -1);
+		});
+	})();
+
 	// Initialize
 	updateHUD();
 	spawnPiece();
