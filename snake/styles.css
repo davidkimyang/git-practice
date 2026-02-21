@@ -1,0 +1,97 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #1a1a2e;
+  color: #eee;
+  font-family: 'Segoe UI', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+h1 {
+  font-size: 2.5rem;
+  letter-spacing: 4px;
+  color: #4ade80;
+  text-shadow: 0 0 20px rgba(74, 222, 128, 0.5);
+}
+
+.score-board {
+  display: flex;
+  gap: 32px;
+  font-size: 1rem;
+  color: #aaa;
+}
+
+.score-board strong {
+  color: #4ade80;
+  font-size: 1.2rem;
+}
+
+#game-canvas {
+  border: 2px solid #4ade80;
+  box-shadow: 0 0 30px rgba(74, 222, 128, 0.3);
+  border-radius: 4px;
+  position: relative;
+}
+
+.overlay {
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 4px;
+}
+
+.overlay.hidden {
+  display: none;
+}
+
+.overlay-content {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+#overlay-message {
+  font-size: 1.4rem;
+  color: #fff;
+}
+
+#start-btn {
+  padding: 12px 32px;
+  background: #4ade80;
+  color: #1a1a2e;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+
+#start-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 16px rgba(74, 222, 128, 0.6);
+}
+
+.hint {
+  color: #555;
+  font-size: 0.85rem;
+}
