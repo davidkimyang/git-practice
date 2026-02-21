@@ -1,12 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>Game Hub</title>
+  <link rel="stylesheet" href="main.css">
 </head>
 <body>
-  <h1>ABC</h1>
+  <h1>Game Hub</h1>
+  <p class="subtitle">플레이할 게임을 선택하세요</p>
+  <div class="game-list">
+    <a href="./tetris/index.html" class="game-card">
+      <div class="icon">🟦</div>
+      <div class="game-title">Tetris</div>
+      <div class="game-desc">블록을 쌓아라</div>
+    </a>
+    <a href="./snake/index.html" class="game-card">
+      <div class="icon">🐍</div>
+      <div class="game-title">Snake</div>
+      <div class="game-desc">먹이를 먹어라</div>
+    </a>
+  </div>
 </body>
 </html>

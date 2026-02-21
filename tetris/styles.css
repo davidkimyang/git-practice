@@ -17,7 +17,7 @@ body {
 .stat strong { font-size: 18px; }
 
 .main { display: grid; grid-template-columns: 1fr 240px; gap: 24px; margin-top: 16px; }
-.board { display: flex; justify-content: center; align-items: center; background: radial-gradient(1200px 600px at center, #0e1430, #0b1020); border: 1px solid #20305a; border-radius: 12px; padding: 16px; }
+.board { display: flex; flex-direction: column; justify-content: flex-start; align-items: center; background: radial-gradient(1200px 600px at center, #0e1430, #0b1020); border: 1px solid #20305a; border-radius: 12px; padding: 16px; }
 .board canvas { width: 100%; height: auto; max-width: 360px; image-rendering: pixelated; }
 
 .sidebar { display: flex; flex-direction: column; gap: 16px; }
@@ -35,8 +35,67 @@ body {
 	--ghost-color: rgba(255, 255, 255, 0.18);
 }
 
+/* Mobile controls */
+.mobile-controls {
+	display: none;
+	flex-direction: column;
+	align-items: center;
+	gap: 8px;
+	margin-top: 16px;
+}
+
+.ctrl-row {
+	display: flex;
+	gap: 8px;
+}
+
+.ctrl-btn {
+	width: 64px;
+	height: 64px;
+	font-size: 22px;
+	background: #121932;
+	border: 1px solid #20305a;
+	border-radius: 10px;
+	color: #e6edf3;
+	cursor: pointer;
+	touch-action: manipulation;
+	user-select: none;
+	-webkit-user-select: none;
+}
+
+.ctrl-btn:active {
+	background: #1d2b52;
+	transform: scale(0.94);
+}
+
 /* Responsive */
 @media (max-width: 900px) {
 	.main { grid-template-columns: 1fr; }
 	.board canvas { max-width: 480px; }
+}
+
+@media (max-width: 600px) {
+	.mobile-controls { display: flex; }
+}
+
+/* iPhone / small mobile */
+@media (max-width: 480px) {
+	.app { padding: 8px; }
+	.header h1 { font-size: 20px; }
+	.stats { gap: 8px; }
+	.stat { padding: 5px 8px; }
+	.stat strong { font-size: 14px; }
+	.main { margin-top: 8px; gap: 8px; }
+	.board { padding: 8px; }
+	.board canvas {
+		max-height: calc(100svh - 265px);
+		width: auto;
+		max-width: 100%;
+	}
+	.mobile-controls { margin-top: 8px; gap: 6px; }
+	.ctrl-btn { width: 56px; height: 56px; font-size: 18px; }
+}
+
+@media (hover: none) and (pointer: coarse) {
+	.mobile-controls { display: flex; }
 }
