@@ -3,6 +3,7 @@ import { useParams, Link, useSearchParams } from 'react-router-dom';
 import { postsAPI } from '../../utils/api';
 import Pagination from '../../components/common/Pagination';
 import { useAuth } from '../../contexts/AuthContext';
+import { MOCK_POSTS } from '../../utils/mockData';
 
 const BOARDS = {
   talk: { label: '웨이터 소통방', emoji: '💬', desc: '자유롭게 소통하는 공간' },
@@ -31,6 +32,12 @@ export default function CommunityList() {
         setPosts(res.data.posts);
         setTotal(res.data.total);
         setTotalPages(res.data.totalPages);
+      })
+      .catch(() => {
+        const filtered = MOCK_POSTS.filter(p => p.board_type === boardType);
+        setPosts(filtered);
+        setTotal(filtered.length);
+        setTotalPages(1);
       })
       .finally(() => setLoading(false));
   }, [boardType, searchParams.toString()]);

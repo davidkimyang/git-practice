@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { jobsAPI, postsAPI } from '../utils/api';
 import JobCard from '../components/common/JobCard';
+import { MOCK_JOBS, MOCK_POSTS } from '../utils/mockData';
 
 const REGIONS = ['서울', '부산', '대구', '인천', '광주', '대전', '수원', '울산', '제주'];
 
@@ -12,11 +13,12 @@ export default function Home() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    jobsAPI.getAll({ limit: 6, grade: 'premium' })
+    jobsAPI.getAll({ limit: 6 })
       .then(res => setFeaturedJobs(res.data.jobs))
-      .catch(() => jobsAPI.getAll({ limit: 6 }).then(res => setFeaturedJobs(res.data.jobs)));
+      .catch(() => setFeaturedJobs(MOCK_JOBS));
     postsAPI.getAll({ limit: 5 })
-      .then(res => setRecentPosts(res.data.posts));
+      .then(res => setRecentPosts(res.data.posts))
+      .catch(() => setRecentPosts(MOCK_POSTS));
   }, []);
 
   const handleSearch = (e) => {

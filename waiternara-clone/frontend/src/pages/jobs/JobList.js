@@ -4,6 +4,7 @@ import { jobsAPI } from '../../utils/api';
 import JobCard from '../../components/common/JobCard';
 import Pagination from '../../components/common/Pagination';
 import { useAuth } from '../../contexts/AuthContext';
+import { MOCK_JOBS } from '../../utils/mockData';
 
 const REGIONS = ['전체', '서울', '부산', '대구', '인천', '광주', '대전', '수원', '울산', '제주'];
 const GRADES = [
@@ -38,6 +39,14 @@ export default function JobList() {
         setJobs(res.data.jobs);
         setTotal(res.data.total);
         setTotalPages(res.data.totalPages);
+      })
+      .catch(() => {
+        let filtered = MOCK_JOBS;
+        if (region) filtered = filtered.filter(j => j.region === region);
+        if (grade) filtered = filtered.filter(j => j.grade === grade);
+        setJobs(filtered);
+        setTotal(filtered.length);
+        setTotalPages(1);
       })
       .finally(() => setLoading(false));
   };
