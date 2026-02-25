@@ -20,7 +20,11 @@ export default function JobDetail() {
 
   useEffect(() => {
     jobsAPI.getById(id)
-      .then(res => { setJob(res.data.job); setBookmarked(res.data.bookmarked); })
+      .then(res => {
+        if (!res.data?.job) throw new Error('not found');
+        setJob(res.data.job);
+        setBookmarked(res.data.bookmarked || false);
+      })
       .catch(() => navigate('/jobs'))
       .finally(() => setLoading(false));
   }, [id]);

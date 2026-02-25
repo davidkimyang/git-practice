@@ -14,10 +14,10 @@ export default function Home() {
 
   useEffect(() => {
     jobsAPI.getAll({ limit: 6 })
-      .then(res => setFeaturedJobs(res.data.jobs))
+      .then(res => setFeaturedJobs(res.data?.jobs || MOCK_JOBS))
       .catch(() => setFeaturedJobs(MOCK_JOBS));
     postsAPI.getAll({ limit: 5 })
-      .then(res => setRecentPosts(res.data.posts))
+      .then(res => setRecentPosts(res.data?.posts || MOCK_POSTS))
       .catch(() => setRecentPosts(MOCK_POSTS));
   }, []);
 

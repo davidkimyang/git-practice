@@ -29,9 +29,11 @@ export default function CommunityList() {
     setLoading(true);
     postsAPI.getAll({ board_type: boardType, page, limit: 15, search: searchParams.get('search') })
       .then(res => {
-        setPosts(res.data.posts);
-        setTotal(res.data.total);
-        setTotalPages(res.data.totalPages);
+        const posts = res.data?.posts;
+        if (!Array.isArray(posts)) throw new Error('invalid');
+        setPosts(posts);
+        setTotal(res.data?.total || posts.length);
+        setTotalPages(res.data?.totalPages || 1);
       })
       .catch(() => {
         const filtered = MOCK_POSTS.filter(p => p.board_type === boardType);

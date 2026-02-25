@@ -18,9 +18,10 @@ export default function CommunityDetail() {
   useEffect(() => {
     postsAPI.getById(id)
       .then(res => {
+        if (!res.data?.post) throw new Error('not found');
         setPost(res.data.post);
-        setComments(res.data.comments);
-        setLiked(res.data.liked);
+        setComments(res.data.comments || []);
+        setLiked(res.data.liked || false);
       })
       .catch(() => navigate(`/community/${boardType}`))
       .finally(() => setLoading(false));

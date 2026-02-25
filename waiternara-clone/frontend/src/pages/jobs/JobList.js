@@ -36,9 +36,11 @@ export default function JobList() {
 
     jobsAPI.getAll(params)
       .then(res => {
-        setJobs(res.data.jobs);
-        setTotal(res.data.total);
-        setTotalPages(res.data.totalPages);
+        const jobs = res.data?.jobs;
+        if (!Array.isArray(jobs)) throw new Error('invalid');
+        setJobs(jobs);
+        setTotal(res.data?.total || jobs.length);
+        setTotalPages(res.data?.totalPages || 1);
       })
       .catch(() => {
         let filtered = MOCK_JOBS;
