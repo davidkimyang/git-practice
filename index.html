@@ -1,12 +1,69 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>게임 모음</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #1a1a2e;
+      color: #eee;
+      font-family: 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+      padding: 40px 20px;
+    }
+    h1 {
+      font-size: 2.5rem;
+      color: #e94560;
+      letter-spacing: 4px;
+    }
+    .games {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+    }
+    .game-card {
+      background: #16213e;
+      border: 2px solid #0f3460;
+      border-radius: 12px;
+      padding: 32px 40px;
+      text-align: center;
+      text-decoration: none;
+      color: #eee;
+      transition: all 0.2s;
+      min-width: 160px;
+    }
+    .game-card:hover {
+      border-color: #e94560;
+      transform: translateY(-4px);
+    }
+    .game-card .icon { font-size: 3rem; }
+    .game-card .name {
+      margin-top: 12px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #cceeff;
+    }
+  </style>
 </head>
 <body>
-  <h1>ABC</h1>
+  <h1>게임 모음</h1>
+  <div class="games">
+    <a class="game-card" href="sudoku/">
+      <div class="icon">🔢</div>
+      <div class="name">스도쿠</div>
+    </a>
+    <a class="game-card" href="tetris/">
+      <div class="icon">🟦</div>
+      <div class="name">테트리스</div>
+    </a>
+  </div>
 </body>
 </html>
