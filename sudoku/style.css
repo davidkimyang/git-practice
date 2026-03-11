@@ -5,8 +5,8 @@
 }
 
 body {
-  background: #1a1a2e;
-  color: #eee;
+  background: #f0f4f8;
+  color: #222;
   font-family: 'Segoe UI', sans-serif;
   min-height: 100vh;
   display: flex;
@@ -46,13 +46,13 @@ h1 {
 
 .difficulty label {
   font-size: 0.85rem;
-  color: #aaa;
+  color: #666;
 }
 
 .diff-btn {
-  background: #16213e;
-  color: #aaa;
-  border: 1px solid #444;
+  background: #fff;
+  color: #555;
+  border: 1px solid #ccc;
   padding: 4px 10px;
   border-radius: 4px;
   cursor: pointer;
@@ -62,7 +62,7 @@ h1 {
 
 .diff-btn:hover {
   border-color: #e94560;
-  color: #fff;
+  color: #e94560;
 }
 
 .diff-btn.active {
@@ -86,20 +86,21 @@ h1 {
   border-radius: 4px;
   width: 100%;
   aspect-ratio: 1;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
 }
 
 .cell {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: clamp(14px, 3.5vw, 22px);
-  font-weight: 600;
+  font-size: clamp(18px, 5vw, 30px);
+  font-weight: 700;
   cursor: pointer;
-  border: 1px solid #333;
-  background: #16213e;
+  border: 1px solid #bbb;
+  background: #fff;
   transition: background 0.15s;
   user-select: none;
-  color: #cceeff;
+  color: #1a6fc4;
 }
 
 /* 3x3 box borders */
@@ -109,8 +110,8 @@ h1 {
 .cell[data-row="5"] { border-bottom: 2px solid #e94560; }
 
 .cell.given {
-  color: #fff;
-  background: #0f3460;
+  color: #111;
+  background: #e8edf2;
   cursor: default;
 }
 
@@ -120,20 +121,20 @@ h1 {
 }
 
 .cell.highlighted {
-  background: #1e3a5f;
+  background: #fde8ec;
 }
 
 .cell.same-num {
-  background: #2a4a7f;
+  background: #f9c0cb;
 }
 
 .cell.error {
-  color: #ff6b6b !important;
-  background: #3a1a1a !important;
+  color: #cc0000 !important;
+  background: #ffe0e0 !important;
 }
 
 .cell:hover:not(.given):not(.selected) {
-  background: #1e3a5f;
+  background: #fde8ec;
 }
 
 /* Numpad */
@@ -145,15 +146,16 @@ h1 {
 }
 
 .num-btn {
-  background: #16213e;
-  color: #cceeff;
-  border: 1px solid #444;
-  padding: 12px 0;
+  background: #fff;
+  color: #1a6fc4;
+  border: 1px solid #ccc;
+  padding: 14px 0;
   border-radius: 6px;
-  font-size: 1.1rem;
+  font-size: 1.3rem;
   font-weight: bold;
   cursor: pointer;
   transition: all 0.15s;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.08);
 }
 
 .num-btn:hover {
@@ -163,8 +165,8 @@ h1 {
 }
 
 .erase-btn {
-  font-size: 0.75rem;
-  grid-column: span 1;
+  font-size: 0.8rem;
+  color: #888;
 }
 
 /* Action buttons */
@@ -191,15 +193,14 @@ h1 {
 }
 
 #hint-btn {
-  background: #0f3460;
-  color: #cceeff;
-  border: 1px solid #e94560;
+  background: #1a6fc4;
+  color: #fff;
 }
 
 #check-btn {
-  background: #16213e;
-  color: #cceeff;
-  border: 1px solid #444;
+  background: #fff;
+  color: #555;
+  border: 1px solid #ccc;
 }
 
 .action-btns button:hover {
@@ -217,21 +218,21 @@ h1 {
 }
 
 .message.success {
-  background: #1a4a1a;
-  color: #6bff6b;
-  border: 1px solid #6bff6b;
+  background: #e6f9e6;
+  color: #1a7a1a;
+  border: 1px solid #6bcc6b;
 }
 
 .message.error-msg {
-  background: #3a1a1a;
-  color: #ff6b6b;
-  border: 1px solid #ff6b6b;
+  background: #fff0f0;
+  color: #cc0000;
+  border: 1px solid #ff9999;
 }
 
 .message.info {
-  background: #0f3460;
-  color: #cceeff;
-  border: 1px solid #e94560;
+  background: #e8f0fb;
+  color: #1a6fc4;
+  border: 1px solid #a0c4f1;
 }
 
 .hidden {
