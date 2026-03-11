@@ -1,0 +1,244 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: #1a1a2e;
+  color: #eee;
+  font-family: 'Segoe UI', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 20px;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  max-width: 480px;
+}
+
+h1 {
+  font-size: 2rem;
+  color: #e94560;
+  letter-spacing: 4px;
+}
+
+/* Controls */
+.controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.difficulty {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.difficulty label {
+  font-size: 0.85rem;
+  color: #aaa;
+}
+
+.diff-btn {
+  background: #16213e;
+  color: #aaa;
+  border: 1px solid #444;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: all 0.2s;
+}
+
+.diff-btn:hover {
+  border-color: #e94560;
+  color: #fff;
+}
+
+.diff-btn.active {
+  background: #e94560;
+  color: #fff;
+  border-color: #e94560;
+}
+
+.timer {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #e94560;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Board */
+.board {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  border: 3px solid #e94560;
+  border-radius: 4px;
+  width: 100%;
+  aspect-ratio: 1;
+}
+
+.cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(14px, 3.5vw, 22px);
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid #333;
+  background: #16213e;
+  transition: background 0.15s;
+  user-select: none;
+  color: #cceeff;
+}
+
+/* 3x3 box borders */
+.cell:nth-child(3n) { border-right: 2px solid #e94560; }
+.cell:nth-child(9n) { border-right: none; }
+.cell[data-row="2"] { border-bottom: 2px solid #e94560; }
+.cell[data-row="5"] { border-bottom: 2px solid #e94560; }
+
+.cell.given {
+  color: #fff;
+  background: #0f3460;
+  cursor: default;
+}
+
+.cell.selected {
+  background: #e94560 !important;
+  color: #fff;
+}
+
+.cell.highlighted {
+  background: #1e3a5f;
+}
+
+.cell.same-num {
+  background: #2a4a7f;
+}
+
+.cell.error {
+  color: #ff6b6b !important;
+  background: #3a1a1a !important;
+}
+
+.cell:hover:not(.given):not(.selected) {
+  background: #1e3a5f;
+}
+
+/* Numpad */
+.numpad {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  width: 100%;
+}
+
+.num-btn {
+  background: #16213e;
+  color: #cceeff;
+  border: 1px solid #444;
+  padding: 12px 0;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.num-btn:hover {
+  background: #e94560;
+  color: #fff;
+  border-color: #e94560;
+}
+
+.erase-btn {
+  font-size: 0.75rem;
+  grid-column: span 1;
+}
+
+/* Action buttons */
+.action-btns {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}
+
+.action-btns button {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+#new-game-btn {
+  background: #e94560;
+  color: #fff;
+}
+
+#hint-btn {
+  background: #0f3460;
+  color: #cceeff;
+  border: 1px solid #e94560;
+}
+
+#check-btn {
+  background: #16213e;
+  color: #cceeff;
+  border: 1px solid #444;
+}
+
+.action-btns button:hover {
+  opacity: 0.85;
+}
+
+/* Message */
+.message {
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: bold;
+  text-align: center;
+  animation: fadeIn 0.3s ease;
+}
+
+.message.success {
+  background: #1a4a1a;
+  color: #6bff6b;
+  border: 1px solid #6bff6b;
+}
+
+.message.error-msg {
+  background: #3a1a1a;
+  color: #ff6b6b;
+  border: 1px solid #ff6b6b;
+}
+
+.message.info {
+  background: #0f3460;
+  color: #cceeff;
+  border: 1px solid #e94560;
+}
+
+.hidden {
+  display: none;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
