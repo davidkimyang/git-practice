@@ -1,0 +1,21 @@
+{
+  "expo": {
+    "name": "스도쿠",
+    "slug": "sudoku-rn",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "backgroundColor": "#f0f4f8"
+    },
+    "ios": {
+      "supportsTablet": false
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#f0f4f8"
+      }
+    }
+  }
+}
