@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>손동작 네온 드로잉</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div id="app">
+    <!-- Layer 0: webcam feed -->
+    <video id="webcam" playsinline autoplay muted></video>
+
+    <!-- Layer 1: drawing canvas -->
+    <canvas id="draw-canvas"></canvas>
+
+    <!-- Layer 2: UI overlay -->
+    <div id="ui">
+      <!-- Top-left: controls panel -->
+      <div id="controls-panel">
+        <div id="color-palette">
+          <button class="color-swatch active" data-color="#00f5ff" style="background:#00f5ff;" title="시안"></button>
+          <button class="color-swatch" data-color="#ff00e5" style="background:#ff00e5;" title="마젠타"></button>
+          <button class="color-swatch" data-color="#39ff14" style="background:#39ff14;" title="그린"></button>
+          <button class="color-swatch" data-color="#fff01f" style="background:#fff01f;" title="옐로우"></button>
+          <button class="color-swatch" data-color="#ff6f00" style="background:#ff6f00;" title="오렌지"></button>
+          <button class="color-swatch" data-color="#4d79ff" style="background:#4d79ff;" title="블루"></button>
+        </div>
+        <div id="size-control">
+          <label for="brush-size">크기</label>
+          <input type="range" id="brush-size" min="2" max="40" value="8" />
+        </div>
+        <button id="clear-btn">지우기</button>
+      </div>
+
+      <!-- Top-right: status badge -->
+      <div id="status-badge" class="status-paused">
+        <span id="status-dot"></span>
+        <span id="status-text">PAUSED</span>
+      </div>
+
+      <!-- Bottom-left: instructions -->
+      <div id="instructions">
+        <p>☝️ 검지를 펴서 움직이면 → 커서 추적</p>
+        <p>🤏 엄지+검지 핀치 → 그리기 ON/OFF 토글</p>
+      </div>
+
+      <!-- Camera error overlay -->
+      <div id="camera-error" class="hidden">
+        <div id="camera-error-msg">
+          <p>카메라 접근 권한이 필요합니다.</p>
+          <p>브라우저에서 카메라 권한을 허용한 후 페이지를 새로고침하세요.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MediaPipe CDN (must load before main.js) -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+  <script src="./main.js"></script>
+</body>
+</html>

@@ -1,0 +1,255 @@
+:root {
+  --neon-cyan:    #00f5ff;
+  --neon-magenta: #ff00e5;
+  --neon-green:   #39ff14;
+  --neon-yellow:  #fff01f;
+  --neon-orange:  #ff6f00;
+  --neon-blue:    #4d79ff;
+
+  --panel-bg:     rgba(0, 0, 0, 0.65);
+  --panel-border: rgba(255, 255, 255, 0.12);
+  --font:         'Courier New', 'Lucida Console', monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #000;
+  font-family: var(--font);
+}
+
+/* ── App container ── */
+#app {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ── Layer 0: webcam ── */
+#webcam {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scaleX(-1);   /* mirror: feels natural like a mirror */
+  opacity: 0.3;            /* darken so neon strokes pop */
+  z-index: 0;
+}
+
+/* ── Layer 1: drawing canvas ── */
+#draw-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  /* transparent background — video shows through */
+}
+
+/* ── Layer 2: UI overlay ── */
+#ui {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;   /* pass mouse clicks through to canvas */
+}
+
+/* ── Controls panel (top-left) ── */
+#controls-panel {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  padding: 16px;
+  backdrop-filter: blur(10px);
+  pointer-events: auto;
+}
+
+/* ── Color palette ── */
+#color-palette {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.color-swatch {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+  outline: none;
+}
+
+.color-swatch:hover {
+  transform: scale(1.15);
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+.color-swatch.active {
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.25), 0 0 14px currentColor;
+  transform: scale(1.1);
+}
+
+/* Individual swatch glow on hover */
+.color-swatch[data-color="#00f5ff"]:hover { box-shadow: 0 0 16px var(--neon-cyan); }
+.color-swatch[data-color="#ff00e5"]:hover { box-shadow: 0 0 16px var(--neon-magenta); }
+.color-swatch[data-color="#39ff14"]:hover { box-shadow: 0 0 16px var(--neon-green); }
+.color-swatch[data-color="#fff01f"]:hover { box-shadow: 0 0 16px var(--neon-yellow); }
+.color-swatch[data-color="#ff6f00"]:hover { box-shadow: 0 0 16px var(--neon-orange); }
+.color-swatch[data-color="#4d79ff"]:hover { box-shadow: 0 0 16px var(--neon-blue); }
+
+/* ── Brush size ── */
+#size-control {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+
+#brush-size {
+  flex: 1;
+  accent-color: var(--neon-cyan);
+  cursor: pointer;
+}
+
+/* ── Clear button ── */
+#clear-btn {
+  background: transparent;
+  border: 1px solid rgba(255, 80, 80, 0.6);
+  color: #ff5050;
+  font-family: var(--font);
+  font-size: 12px;
+  letter-spacing: 2px;
+  padding: 7px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  text-shadow: 0 0 8px #ff5050;
+  transition: background 0.15s, box-shadow 0.15s;
+  pointer-events: auto;
+}
+
+#clear-btn:hover {
+  background: rgba(255, 80, 80, 0.15);
+  box-shadow: 0 0 12px rgba(255, 80, 80, 0.4);
+}
+
+/* ── Status badge (top-right) ── */
+#status-badge {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 20px;
+  padding: 8px 16px;
+  backdrop-filter: blur(10px);
+  font-size: 12px;
+  letter-spacing: 2px;
+  font-weight: bold;
+  pointer-events: none;
+}
+
+#status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.status-drawing #status-dot {
+  background: var(--neon-green);
+  box-shadow: 0 0 8px var(--neon-green);
+  animation: pulse-green 1.2s ease-in-out infinite;
+}
+
+.status-drawing #status-text {
+  color: var(--neon-green);
+  text-shadow: 0 0 8px var(--neon-green);
+}
+
+.status-paused #status-dot {
+  background: #ff5050;
+  box-shadow: 0 0 8px #ff5050;
+}
+
+.status-paused #status-text {
+  color: #ff5050;
+  text-shadow: 0 0 8px #ff5050;
+}
+
+@keyframes pulse-green {
+  0%, 100% { opacity: 1; box-shadow: 0 0 8px var(--neon-green); }
+  50%       { opacity: 0.5; box-shadow: 0 0 2px var(--neon-green); }
+}
+
+/* ── Instructions (bottom-left) ── */
+#instructions {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 10px;
+  padding: 12px 16px;
+  backdrop-filter: blur(10px);
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 12px;
+  line-height: 1.8;
+  pointer-events: none;
+}
+
+/* ── Camera error overlay ── */
+#camera-error {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.85);
+  pointer-events: auto;
+}
+
+#camera-error-msg {
+  background: var(--panel-bg);
+  border: 1px solid rgba(255, 80, 80, 0.5);
+  border-radius: 12px;
+  padding: 32px 40px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 16px;
+  line-height: 2;
+  box-shadow: 0 0 30px rgba(255, 80, 80, 0.2);
+}
+
+.hidden {
+  display: none !important;
+}
