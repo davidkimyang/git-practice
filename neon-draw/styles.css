@@ -6,9 +6,12 @@
   --neon-orange:  #ff6f00;
   --neon-blue:    #4d79ff;
 
-  --panel-bg:     rgba(8, 8, 20, 0.75);
+  --panel-bg:     rgba(8, 8, 20, 0.80);
   --panel-border: rgba(255, 255, 255, 0.1);
   --font:         'Courier New', 'Lucida Console', monospace;
+
+  /* 사이드바 너비 - 좁게 */
+  --sidebar-w: 52px;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -20,7 +23,7 @@ html, body {
   font-family: var(--font);
 }
 
-/* ── App container ── */
+/* ── App ── */
 #app {
   position: relative;
   width: 100vw; height: 100vh;
@@ -37,14 +40,14 @@ html, body {
   z-index: 0;
 }
 
-/* ── Layer 1: drawing canvas ── */
+/* ── Layer 1: 드로잉 캔버스 ── */
 #draw-canvas {
   position: absolute; inset: 0;
   width: 100%; height: 100%;
   z-index: 1;
 }
 
-/* ── Layer 2: overlay canvas ── */
+/* ── Layer 2: 오버레이 캔버스 ── */
 #overlay-canvas {
   position: absolute; inset: 0;
   width: 100%; height: 100%;
@@ -59,161 +62,203 @@ html, body {
   pointer-events: none;
 }
 
-/* ─────────────────────────────────────────
-   Toolbar (left edge)
-───────────────────────────────────────── */
-#toolbar {
+/* ═══════════════════════════════════════════
+   LEFT SIDEBAR
+   - 단일 좁은 세로 패널
+   - 툴버튼 위, 색상/이모티콘 아래
+═══════════════════════════════════════════ */
+#left-sidebar {
   position: absolute;
   top: 50%;
-  left: 16px;
+  left: 12px;
   transform: translateY(-50%);
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 8px;
+  gap: 6px;
+  max-height: 94vh;
+  overflow-y: auto;
+  overflow-x: visible;
+  pointer-events: auto;
+  /* 스크롤바 숨김 */
+  scrollbar-width: none;
+}
+#left-sidebar::-webkit-scrollbar { display: none; }
+
+/* ─────────────────────────────────────────
+   툴바 (도구 버튼)
+───────────────────────────────────────── */
+#toolbar {
+  width: var(--sidebar-w);
   background: var(--panel-bg);
   border: 1px solid var(--panel-border);
   border-radius: 16px;
-  padding: 12px 8px;
+  padding: 10px 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
   backdrop-filter: blur(12px);
-  pointer-events: auto;
 }
 
 .tool-btn {
-  width: 42px; height: 42px;
+  width: 40px; height: 40px;
   border-radius: 10px;
   border: 1px solid transparent;
   background: transparent;
-  font-size: 20px;
+  font-size: 19px;
   cursor: pointer;
   display: flex; align-items: center; justify-content: center;
   transition: background 0.15s, border-color 0.15s, transform 0.1s;
   line-height: 1;
+  flex-shrink: 0;
 }
+.tool-btn:hover  { background: rgba(255,255,255,0.08); transform: scale(1.08); }
+.tool-btn.active { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.3); }
 
-.tool-btn:hover {
-  background: rgba(255,255,255,0.08);
-  transform: scale(1.08);
-}
-
-.tool-btn.active {
-  background: rgba(255,255,255,0.12);
-  border-color: rgba(255,255,255,0.3);
-  box-shadow: 0 0 10px rgba(255,255,255,0.1);
-}
-
-/* Mode-specific active glow */
-.mode-draw  .tool-btn[data-mode="draw"].active  { border-color: var(--neon-cyan);    box-shadow: 0 0 12px var(--neon-cyan); }
-.mode-erase .tool-btn[data-mode="erase"].active { border-color: #ff5050;             box-shadow: 0 0 12px #ff5050; }
-.mode-move  .tool-btn[data-mode="move"].active  { border-color: var(--neon-yellow);  box-shadow: 0 0 12px var(--neon-yellow); }
-.mode-emoji .tool-btn[data-mode="emoji"].active { border-color: var(--neon-magenta); box-shadow: 0 0 12px var(--neon-magenta); }
+/* 모드별 활성 글로우 */
+.mode-draw  .tool-btn[data-mode="draw"].active  { border-color: var(--neon-cyan);    box-shadow: 0 0 10px var(--neon-cyan); }
+.mode-erase .tool-btn[data-mode="erase"].active { border-color: #ff5050;             box-shadow: 0 0 10px #ff5050; }
+.mode-move  .tool-btn[data-mode="move"].active  { border-color: var(--neon-yellow);  box-shadow: 0 0 10px var(--neon-yellow); }
+.mode-emoji .tool-btn[data-mode="emoji"].active { border-color: var(--neon-magenta); box-shadow: 0 0 10px var(--neon-magenta); }
 
 .tool-sep {
-  width: 26px; height: 1px;
+  width: 28px; height: 1px;
   background: var(--panel-border);
   margin: 2px 0;
+  flex-shrink: 0;
 }
 
 /* ─────────────────────────────────────────
-   Side panels (next to toolbar)
+   DRAW 패널 (색상 + 두께) — 툴바 바로 아래
 ───────────────────────────────────────── */
-.side-panel {
-  position: absolute;
-  top: 50%;
-  left: 76px;
-  transform: translateY(-50%);
+#draw-panel {
+  width: var(--sidebar-w);
   background: var(--panel-bg);
   border: 1px solid var(--panel-border);
   border-radius: 14px;
-  padding: 14px 12px;
-  backdrop-filter: blur(12px);
-  pointer-events: auto;
+  padding: 10px 5px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  align-items: center;
+  gap: 8px;
+  backdrop-filter: blur(12px);
 }
 
-.panel-hint {
-  color: rgba(255,255,255,0.5);
-  font-size: 11px;
-  letter-spacing: 0.5px;
-  white-space: nowrap;
-}
-
-.hidden { display: none !important; }
-
-/* ─────────────────────────────────────────
-   Draw panel
-───────────────────────────────────────── */
+/* 색상 팔레트: 단일 세로 열 */
 #color-palette {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  align-items: center;
+  gap: 7px;
 }
 
 .color-swatch {
-  width: 32px; height: 32px;
+  width: 28px; height: 28px;
   border-radius: 50%;
   border: 2px solid rgba(255,255,255,0.15);
   cursor: pointer;
   transition: transform 0.12s, box-shadow 0.12s, border-color 0.12s;
   outline: none;
+  flex-shrink: 0;
 }
-.color-swatch:hover   { transform: scale(1.15); border-color: rgba(255,255,255,0.5); }
-.color-swatch.active  { border: 2px solid #fff; transform: scale(1.1); box-shadow: 0 0 0 3px rgba(255,255,255,0.2); }
+.color-swatch:hover  { transform: scale(1.2); border-color: rgba(255,255,255,0.5); }
+.color-swatch.active { border: 2px solid #fff; transform: scale(1.15); box-shadow: 0 0 0 2px rgba(255,255,255,0.25); }
 
-#size-row {
+/* 구분선 */
+#draw-panel .sep {
+  width: 28px; height: 1px;
+  background: var(--panel-border);
+}
+
+/* 두께 슬라이더: 세로 방향 */
+#size-wrap {
+  width: 32px;
+  height: 72px;
   display: flex;
   align-items: center;
-  gap: 8px;
-  color: rgba(255,255,255,0.55);
-  font-size: 11px;
-  letter-spacing: 1px;
+  justify-content: center;
+  overflow: visible;
 }
+
 #brush-size {
-  width: 70px;
+  /* 세로 슬라이더: 가로 70px 슬라이더를 -90도 회전 */
+  width: 68px;
+  height: 4px;
+  transform: rotate(-90deg);
+  transform-origin: center center;
   accent-color: var(--neon-cyan);
   cursor: pointer;
+  flex-shrink: 0;
 }
 
 /* ─────────────────────────────────────────
-   Emoji panel
+   EMOJI 패널 — 툴바 아래, 2열 그리드
 ───────────────────────────────────────── */
+#emoji-panel {
+  width: var(--sidebar-w);
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 14px;
+  padding: 8px 5px;
+  backdrop-filter: blur(12px);
+}
+
 #emoji-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 4px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 3px;
 }
 
 .emoji-btn {
-  width: 36px; height: 36px;
-  border-radius: 8px;
+  width: 20px; height: 20px;
+  border-radius: 6px;
   border: 1px solid transparent;
   background: rgba(255,255,255,0.05);
-  font-size: 20px;
+  font-size: 14px;
   cursor: pointer;
   display: flex; align-items: center; justify-content: center;
   transition: background 0.1s, border-color 0.1s, transform 0.1s;
   line-height: 1;
 }
-.emoji-btn:hover { background: rgba(255,255,255,0.12); transform: scale(1.15); }
-.emoji-btn.active {
-  border-color: var(--neon-magenta);
-  background: rgba(255,0,229,0.15);
-  box-shadow: 0 0 10px var(--neon-magenta);
+.emoji-btn:hover  { background: rgba(255,255,255,0.14); transform: scale(1.2); }
+.emoji-btn.active { border-color: var(--neon-magenta); background: rgba(255,0,229,0.18); box-shadow: 0 0 8px var(--neon-magenta); }
+
+/* ─────────────────────────────────────────
+   MOVE 패널 — 힌트 텍스트
+───────────────────────────────────────── */
+#move-panel {
+  width: var(--sidebar-w);
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 14px;
+  padding: 10px 4px;
+  backdrop-filter: blur(12px);
+}
+
+.move-hint {
+  color: rgba(255,255,255,0.5);
+  font-size: 10px;
+  line-height: 1.8;
+  text-align: center;
+  letter-spacing: 0.3px;
 }
 
 /* ─────────────────────────────────────────
-   Status badge (top-right)
+   유틸
+───────────────────────────────────────── */
+.hidden { display: none !important; }
+
+/* ─────────────────────────────────────────
+   상태 배지 (우상단)
 ───────────────────────────────────────── */
 #status-badge {
   position: absolute;
   top: 16px; right: 16px;
-  display: flex; align-items: center; gap: 8px;
+  display: flex; align-items: center; gap: 7px;
   background: var(--panel-bg);
   border: 1px solid var(--panel-border);
   border-radius: 20px;
-  padding: 7px 14px;
+  padding: 6px 13px;
   backdrop-filter: blur(12px);
   font-size: 11px;
   letter-spacing: 2px;
@@ -221,48 +266,44 @@ html, body {
   pointer-events: none;
 }
 
-#status-dot {
-  width: 7px; height: 7px;
-  border-radius: 50%;
-}
+#status-dot { width: 7px; height: 7px; border-radius: 50%; }
 
-/* Mode colors */
 .status-draw  #status-dot { background: var(--neon-cyan);    box-shadow: 0 0 8px var(--neon-cyan);    animation: pulse 1.4s ease-in-out infinite; }
 .status-draw  #status-text { color: var(--neon-cyan);    text-shadow: 0 0 8px var(--neon-cyan); }
 .status-erase #status-dot { background: #ff5050;             box-shadow: 0 0 8px #ff5050; }
 .status-erase #status-text { color: #ff5050;             text-shadow: 0 0 8px #ff5050; }
-.status-move  #status-dot { background: var(--neon-yellow);  box-shadow: 0 0 8px var(--neon-yellow); animation: pulse 1.4s ease-in-out infinite; }
+.status-move  #status-dot { background: var(--neon-yellow);  box-shadow: 0 0 8px var(--neon-yellow);  animation: pulse 1.4s ease-in-out infinite; }
 .status-move  #status-text { color: var(--neon-yellow);  text-shadow: 0 0 8px var(--neon-yellow); }
 .status-emoji #status-dot { background: var(--neon-magenta); box-shadow: 0 0 8px var(--neon-magenta); animation: pulse 1.4s ease-in-out infinite; }
 .status-emoji #status-text { color: var(--neon-magenta); text-shadow: 0 0 8px var(--neon-magenta); }
 
 @keyframes pulse {
   0%, 100% { opacity: 1; }
-  50%       { opacity: 0.35; }
+  50%       { opacity: 0.3; }
 }
 
 /* ─────────────────────────────────────────
-   Instructions (bottom center)
+   안내 문구 (하단 중앙)
 ───────────────────────────────────────── */
 #instructions {
   position: absolute;
-  bottom: 16px;
+  bottom: 14px;
   left: 50%;
   transform: translateX(-50%);
   background: var(--panel-bg);
   border: 1px solid var(--panel-border);
   border-radius: 20px;
-  padding: 8px 18px;
+  padding: 7px 16px;
   backdrop-filter: blur(12px);
-  color: rgba(255,255,255,0.45);
-  font-size: 11px;
-  letter-spacing: 0.5px;
+  color: rgba(255,255,255,0.4);
+  font-size: 10px;
+  letter-spacing: 0.4px;
   white-space: nowrap;
   pointer-events: none;
 }
 
 /* ─────────────────────────────────────────
-   Camera error
+   카메라 오류
 ───────────────────────────────────────── */
 #camera-error {
   position: absolute; inset: 0;
@@ -274,96 +315,99 @@ html, body {
   background: var(--panel-bg);
   border: 1px solid rgba(255,80,80,0.4);
   border-radius: 14px;
-  padding: 32px 40px;
+  padding: 28px 36px;
   text-align: center;
   color: rgba(255,255,255,0.8);
-  font-size: 15px;
+  font-size: 14px;
   line-height: 2.2;
   box-shadow: 0 0 40px rgba(255,80,80,0.15);
 }
 
 /* ─────────────────────────────────────────
-   Body class for mode theming
+   세로 모드: 사이드바를 하단으로
 ───────────────────────────────────────── */
-body.mode-draw  {}
-body.mode-erase {}
-body.mode-move  {}
-body.mode-emoji {}
-
-/* ═══════════════════════════════════════════
-   PORTRAIT (세로) 레이아웃
-   툴바 → 하단 수평 배치
-   패널 → 툴바 위로 팝업
-═══════════════════════════════════════════ */
 @media (orientation: portrait) {
-
-  /* ── 툴바: 하단 가운데, 가로 방향 ── */
-  #toolbar {
+  #left-sidebar {
     top: auto;
-    bottom: 16px;
+    bottom: 14px;
     left: 50%;
     right: auto;
     transform: translateX(-50%);
     flex-direction: row;
-    width: auto;
-    border-radius: 24px;
-    padding: 8px 12px;
+    align-items: flex-end;
+    max-height: none;
+    max-width: 96vw;
+    overflow-x: auto;
+    overflow-y: visible;
     gap: 6px;
   }
 
+  /* 툴바: 가로 배치 */
+  #toolbar {
+    width: auto;
+    flex-direction: row;
+    border-radius: 20px;
+    padding: 8px 10px;
+    gap: 4px;
+  }
+
   .tool-sep {
-    width: 1px;
-    height: 26px;
+    width: 1px; height: 28px;
     margin: 0 2px;
   }
 
-  /* ── 사이드 패널: 툴바 바로 위 중앙 팝업 ── */
-  .side-panel {
-    top: auto;
-    bottom: 90px;
-    left: 16px;
-    right: 16px;
-    transform: none;
+  /* draw 패널: 툴바 왼쪽에 나란히, 가로 배치 */
+  #draw-panel {
     width: auto;
-    max-height: 55vh;
-    overflow-y: auto;
+    flex-direction: row;
+    align-items: center;
+    border-radius: 20px;
+    padding: 8px 10px;
+    gap: 8px;
   }
 
-  /* ── 색상 팔레트: 가로 배치 ── */
+  /* 색상: 가로 한 줄 */
   #color-palette {
     flex-direction: row;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 10px;
+    gap: 7px;
   }
 
-  .color-swatch {
-    width: 36px;
-    height: 36px;
+  /* 슬라이더: 가로 방향으로 복원 */
+  #size-wrap {
+    width: 80px;
+    height: 28px;
   }
-
-  /* ── 크기 슬라이더: 가운데 정렬 ── */
-  #size-row {
-    justify-content: center;
-  }
-
   #brush-size {
-    width: 140px;
+    width: 76px;
+    transform: none;
   }
 
-  /* ── 이모티콘 그리드: 더 많은 열 ── */
+  /* 이모티콘: 한 줄 */
+  #emoji-panel {
+    width: auto;
+    border-radius: 20px;
+    padding: 8px 10px;
+  }
   #emoji-grid {
     grid-template-columns: repeat(8, 1fr);
+    gap: 4px;
+  }
+  .emoji-btn {
+    width: 30px; height: 30px;
+    font-size: 18px;
   }
 
-  /* ── 안내 문구: 세로 모드에서 숨김 (공간 절약) ── */
-  #instructions {
-    display: none;
+  /* move 패널: 한 줄 텍스트 */
+  #move-panel {
+    width: auto;
+    border-radius: 20px;
+    padding: 8px 12px;
+  }
+  .move-hint {
+    white-space: nowrap;
+    line-height: 1;
   }
 
-  /* ── 상태 배지: 좌상단으로 이동 (우상단은 상태바와 겹칠 수 있음) ── */
-  #status-badge {
-    top: 16px;
-    right: 16px;
-  }
+  /* 안내 문구 숨김 */
+  #instructions { display: none; }
 }
