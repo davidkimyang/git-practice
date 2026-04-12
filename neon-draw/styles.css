@@ -1,0 +1,291 @@
+:root {
+  --neon-cyan:    #00f5ff;
+  --neon-magenta: #ff00e5;
+  --neon-green:   #39ff14;
+  --neon-yellow:  #fff01f;
+  --neon-orange:  #ff6f00;
+  --neon-blue:    #4d79ff;
+
+  --panel-bg:     rgba(8, 8, 20, 0.75);
+  --panel-border: rgba(255, 255, 255, 0.1);
+  --font:         'Courier New', 'Lucida Console', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden;
+  background: #000;
+  font-family: var(--font);
+}
+
+/* ── App container ── */
+#app {
+  position: relative;
+  width: 100vw; height: 100vh;
+  overflow: hidden;
+}
+
+/* ── Layer 0: webcam ── */
+#webcam {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transform: scaleX(-1);
+  opacity: 0.28;
+  z-index: 0;
+}
+
+/* ── Layer 1: drawing canvas ── */
+#draw-canvas {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  z-index: 1;
+}
+
+/* ── Layer 2: overlay canvas ── */
+#overlay-canvas {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* ── Layer 3: UI ── */
+#ui {
+  position: absolute; inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* ─────────────────────────────────────────
+   Toolbar (left edge)
+───────────────────────────────────────── */
+#toolbar {
+  position: absolute;
+  top: 50%;
+  left: 16px;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 16px;
+  padding: 12px 8px;
+  backdrop-filter: blur(12px);
+  pointer-events: auto;
+}
+
+.tool-btn {
+  width: 42px; height: 42px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background: transparent;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s, border-color 0.15s, transform 0.1s;
+  line-height: 1;
+}
+
+.tool-btn:hover {
+  background: rgba(255,255,255,0.08);
+  transform: scale(1.08);
+}
+
+.tool-btn.active {
+  background: rgba(255,255,255,0.12);
+  border-color: rgba(255,255,255,0.3);
+  box-shadow: 0 0 10px rgba(255,255,255,0.1);
+}
+
+/* Mode-specific active glow */
+.mode-draw  .tool-btn[data-mode="draw"].active  { border-color: var(--neon-cyan);    box-shadow: 0 0 12px var(--neon-cyan); }
+.mode-erase .tool-btn[data-mode="erase"].active { border-color: #ff5050;             box-shadow: 0 0 12px #ff5050; }
+.mode-move  .tool-btn[data-mode="move"].active  { border-color: var(--neon-yellow);  box-shadow: 0 0 12px var(--neon-yellow); }
+.mode-emoji .tool-btn[data-mode="emoji"].active { border-color: var(--neon-magenta); box-shadow: 0 0 12px var(--neon-magenta); }
+
+.tool-sep {
+  width: 26px; height: 1px;
+  background: var(--panel-border);
+  margin: 2px 0;
+}
+
+/* ─────────────────────────────────────────
+   Side panels (next to toolbar)
+───────────────────────────────────────── */
+.side-panel {
+  position: absolute;
+  top: 50%;
+  left: 76px;
+  transform: translateY(-50%);
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 14px;
+  padding: 14px 12px;
+  backdrop-filter: blur(12px);
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.panel-hint {
+  color: rgba(255,255,255,0.5);
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.hidden { display: none !important; }
+
+/* ─────────────────────────────────────────
+   Draw panel
+───────────────────────────────────────── */
+#color-palette {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.color-swatch {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.15);
+  cursor: pointer;
+  transition: transform 0.12s, box-shadow 0.12s, border-color 0.12s;
+  outline: none;
+}
+.color-swatch:hover   { transform: scale(1.15); border-color: rgba(255,255,255,0.5); }
+.color-swatch.active  { border: 2px solid #fff; transform: scale(1.1); box-shadow: 0 0 0 3px rgba(255,255,255,0.2); }
+
+#size-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: rgba(255,255,255,0.55);
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+#brush-size {
+  width: 70px;
+  accent-color: var(--neon-cyan);
+  cursor: pointer;
+}
+
+/* ─────────────────────────────────────────
+   Emoji panel
+───────────────────────────────────────── */
+#emoji-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+}
+
+.emoji-btn {
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background: rgba(255,255,255,0.05);
+  font-size: 20px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.1s, border-color 0.1s, transform 0.1s;
+  line-height: 1;
+}
+.emoji-btn:hover { background: rgba(255,255,255,0.12); transform: scale(1.15); }
+.emoji-btn.active {
+  border-color: var(--neon-magenta);
+  background: rgba(255,0,229,0.15);
+  box-shadow: 0 0 10px var(--neon-magenta);
+}
+
+/* ─────────────────────────────────────────
+   Status badge (top-right)
+───────────────────────────────────────── */
+#status-badge {
+  position: absolute;
+  top: 16px; right: 16px;
+  display: flex; align-items: center; gap: 8px;
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 20px;
+  padding: 7px 14px;
+  backdrop-filter: blur(12px);
+  font-size: 11px;
+  letter-spacing: 2px;
+  font-weight: bold;
+  pointer-events: none;
+}
+
+#status-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+}
+
+/* Mode colors */
+.status-draw  #status-dot { background: var(--neon-cyan);    box-shadow: 0 0 8px var(--neon-cyan);    animation: pulse 1.4s ease-in-out infinite; }
+.status-draw  #status-text { color: var(--neon-cyan);    text-shadow: 0 0 8px var(--neon-cyan); }
+.status-erase #status-dot { background: #ff5050;             box-shadow: 0 0 8px #ff5050; }
+.status-erase #status-text { color: #ff5050;             text-shadow: 0 0 8px #ff5050; }
+.status-move  #status-dot { background: var(--neon-yellow);  box-shadow: 0 0 8px var(--neon-yellow); animation: pulse 1.4s ease-in-out infinite; }
+.status-move  #status-text { color: var(--neon-yellow);  text-shadow: 0 0 8px var(--neon-yellow); }
+.status-emoji #status-dot { background: var(--neon-magenta); box-shadow: 0 0 8px var(--neon-magenta); animation: pulse 1.4s ease-in-out infinite; }
+.status-emoji #status-text { color: var(--neon-magenta); text-shadow: 0 0 8px var(--neon-magenta); }
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.35; }
+}
+
+/* ─────────────────────────────────────────
+   Instructions (bottom center)
+───────────────────────────────────────── */
+#instructions {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 20px;
+  padding: 8px 18px;
+  backdrop-filter: blur(12px);
+  color: rgba(255,255,255,0.45);
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* ─────────────────────────────────────────
+   Camera error
+───────────────────────────────────────── */
+#camera-error {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.88);
+  pointer-events: auto;
+}
+#camera-error-box {
+  background: var(--panel-bg);
+  border: 1px solid rgba(255,80,80,0.4);
+  border-radius: 14px;
+  padding: 32px 40px;
+  text-align: center;
+  color: rgba(255,255,255,0.8);
+  font-size: 15px;
+  line-height: 2.2;
+  box-shadow: 0 0 40px rgba(255,80,80,0.15);
+}
+
+/* ─────────────────────────────────────────
+   Body class for mode theming
+───────────────────────────────────────── */
+body.mode-draw  {}
+body.mode-erase {}
+body.mode-move  {}
+body.mode-emoji {}

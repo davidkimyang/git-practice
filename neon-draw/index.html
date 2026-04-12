@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>손동작 네온 드로잉</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div id="app">
+    <!-- Layer 0: webcam -->
+    <video id="webcam" playsinline autoplay muted></video>
+
+    <!-- Layer 1: persistent drawing canvas -->
+    <canvas id="draw-canvas"></canvas>
+
+    <!-- Layer 2: hand skeleton + cursor overlay (cleared each frame) -->
+    <canvas id="overlay-canvas"></canvas>
+
+    <!-- Layer 3: UI -->
+    <div id="ui">
+
+      <!-- Left toolbar -->
+      <div id="toolbar">
+        <button class="tool-btn active" data-mode="draw"  title="그리기">✏️</button>
+        <button class="tool-btn"        data-mode="erase" title="부분 지우기">🧹</button>
+        <button class="tool-btn"        data-mode="move"  title="이동">✋</button>
+        <button class="tool-btn"        data-mode="emoji" title="이모티콘">😊</button>
+        <div class="tool-sep"></div>
+        <button class="tool-btn" id="clear-all-btn" title="전체 지우기">🗑️</button>
+      </div>
+
+      <!-- Draw mode: color palette + brush size -->
+      <div id="draw-panel" class="side-panel">
+        <div id="color-palette">
+          <button class="color-swatch active" data-color="#00f5ff" style="background:#00f5ff;" title="시안"></button>
+          <button class="color-swatch" data-color="#ff00e5" style="background:#ff00e5;" title="마젠타"></button>
+          <button class="color-swatch" data-color="#39ff14" style="background:#39ff14;" title="그린"></button>
+          <button class="color-swatch" data-color="#fff01f" style="background:#fff01f;" title="옐로우"></button>
+          <button class="color-swatch" data-color="#ff6f00" style="background:#ff6f00;" title="오렌지"></button>
+          <button class="color-swatch" data-color="#4d79ff" style="background:#4d79ff;" title="블루"></button>
+        </div>
+        <div id="size-row">
+          <span>크기</span>
+          <input type="range" id="brush-size" min="2" max="40" value="8" />
+        </div>
+      </div>
+
+      <!-- Emoji mode: picker panel -->
+      <div id="emoji-panel" class="side-panel hidden">
+        <div class="panel-hint">선택 후 손으로 위치 잡고 🤏 핀치</div>
+        <div id="emoji-grid">
+          <button class="emoji-btn" data-emoji="🔥">🔥</button>
+          <button class="emoji-btn" data-emoji="⭐">⭐</button>
+          <button class="emoji-btn" data-emoji="❤️">❤️</button>
+          <button class="emoji-btn" data-emoji="💫">💫</button>
+          <button class="emoji-btn" data-emoji="✨">✨</button>
+          <button class="emoji-btn" data-emoji="🌈">🌈</button>
+          <button class="emoji-btn" data-emoji="💥">💥</button>
+          <button class="emoji-btn" data-emoji="🎵">🎵</button>
+          <button class="emoji-btn" data-emoji="👑">👑</button>
+          <button class="emoji-btn" data-emoji="🦋">🦋</button>
+          <button class="emoji-btn" data-emoji="😎">😎</button>
+          <button class="emoji-btn" data-emoji="🤘">🤘</button>
+          <button class="emoji-btn" data-emoji="💖">💖</button>
+          <button class="emoji-btn" data-emoji="🎯">🎯</button>
+          <button class="emoji-btn" data-emoji="🚀">🚀</button>
+          <button class="emoji-btn" data-emoji="🌟">🌟</button>
+        </div>
+      </div>
+
+      <!-- Move mode: hint -->
+      <div id="move-panel" class="side-panel hidden">
+        <div class="panel-hint">🤏 핀치로 잡기 → 이동 → 놓기</div>
+        <div class="panel-hint" style="margin-top:6px; opacity:.6">🗑️ 툴바 위로 드래그하면 삭제</div>
+      </div>
+
+      <!-- Status badge (top-right) -->
+      <div id="status-badge" class="status-draw">
+        <span id="status-dot"></span>
+        <span id="status-text">DRAW</span>
+      </div>
+
+      <!-- Instructions (bottom) -->
+      <div id="instructions">
+        <span id="instruction-text">☝️ 검지 펴서 그리기 &nbsp;|&nbsp; 🤏 핀치로 펜 UP/DOWN</span>
+      </div>
+
+      <!-- Camera permission error -->
+      <div id="camera-error" class="hidden">
+        <div id="camera-error-box">
+          <p>📷 카메라 접근 권한이 필요합니다</p>
+          <p>브라우저에서 카메라 권한을 허용한 후 새로고침하세요</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+  <script src="./main.js"></script>
+</body>
+</html>
