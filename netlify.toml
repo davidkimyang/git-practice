@@ -1,0 +1,23 @@
+# HTML 파일: 절대 캐시하지 않음 (항상 최신 버전)
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+    Pragma = "no-cache"
+
+[[headers]]
+  for = "/neon-draw/*.html"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+    Pragma = "no-cache"
+
+# CSS/JS: 캐시버스터(?v=N) 쓰므로 장기 캐시 허용
+[[headers]]
+  for = "/neon-draw/*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/neon-draw/*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
