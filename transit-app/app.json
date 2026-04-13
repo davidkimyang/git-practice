@@ -34,7 +34,14 @@
       ]
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro",
+      "output": "static",
+      "name": "이번 이동",
+      "shortName": "이번이동",
+      "lang": "ko",
+      "themeColor": "#1A56DB",
+      "backgroundColor": "#1A56DB"
     },
     "plugins": [
       [
